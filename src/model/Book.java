@@ -57,6 +57,6 @@ class Book {
     // created this method to help debug and display book information
     @Override
     public String toString() {
-        return title + " by " + author + " (ISBN: " + isbn + ") - Available Copies: " + availableCopies + "/" + totalCopies;)"
+        return title + " by " + author + " (ISBN: " + isbn + ") - Available Copies: " + availableCopies + "/" + totalCopies;
     }
 }
