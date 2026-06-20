@@ -1,16 +1,19 @@
 package persistence;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import model.Book;
 import model.Patron;
+import model.Loan;
 
 public class FileManager {
 
     
     private static final String BOOKS_FILE = "data/books.csv";
     private static final String PATRONS_FILE = "data/patrons.csv";
+    private static final String LOANS_FILE = "data/loans.csv";
 
     // reads Books csv data and loads it on a Books List
     public List<Book> loadBooks(){
@@ -103,5 +106,77 @@ public class FileManager {
         return patrons;
     }
 
-    
+    public static List<Loan> loadLoans(List<Book> books, List<Patron> patrons) throws IOException {
+        List<Loan> loans = new ArrayList<>();
+        
+        File file = new File(LOANS_FILE);
+        if (!file.exists()) {
+            return loans;
+        }
+
+        try (BufferedReader br = new BufferedReader( new FileReader(file) ) ) {
+            br.readLine(); // Ignore the header
+
+            String line;
+            while ( (line = br.readLine()) != null) {
+                if (line.isBlank()) continue;
+
+                String[] parts = line.split(",");
+                int id = Integer.parseInt(parts[0]);
+                int patronId = Integer.parseInt(parts[1]);
+                String bookIsbn = parts[2];
+                LocalDate loanDate = LocalDate.parse(parts[3]);
+                LocalDate dueDate = LocalDate.parse(parts[4]);
+                boolean isReturned = Boolean.parseBoolean(parts[5]);
+
+                // Search the complete object in the lists
+                Patron foundPatron = findPatronById(patrons, patronId);
+                Book foundBook = findBookByIsbn(books, bookIsbn);
+
+                // Only add if find the book and the patron
+                if (foundPatron != null && foundBook != null) {
+                    loans.add( new Loan(id, foundBook, foundPatron, loanDate, dueDate, isReturned));
+                }
+            }
+        } 
+
+        return loans;
+    }
+
+    public static void saveLoans(List<Loan> loans) throws IOException {
+        File file = new File(LOANS_FILE);
+        file.getParentFile().mkdirs(); // Ensure the file path exists
+
+        try (BufferedWriter bw = new BufferedWriter( new FileWriter(file) ) ) {
+            bw.write("id,patronId,bookIsbn,loanDate,dueDate,isReturned"); // Header
+            bw.newLine();
+            
+            for (Loan l : loans) {
+                String line = l.getId() + "," + 
+                              l.getPatron().getId() + "," + 
+                              l.getBook().getIsbn() + "," + 
+                              l.getLoanDate() + "," + 
+                              l.getDueDate() + "," + 
+                              l.getIsReturned();
+
+                bw.write(line);
+                bw.newLine();
+            }
+        }
+    }
+
+    // Aux. methods
+    private static Patron findPatronById(List<Patron> patrons, int id) {
+        for (Patron p : patrons) {
+            if (p.getId() == id) return p;
+        }
+        return null;
+    }
+
+    private static Book findBookByIsbn(List<Book> books, String isbn) {
+        for (Book b : books) {
+            if (b.getIsbn().equals(isbn)) return b;
+        }
+        return null;
+    }
 }
