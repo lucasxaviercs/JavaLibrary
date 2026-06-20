@@ -55,4 +55,15 @@ public class PatronController {
         patron.setContact(newContact.trim());
         FileManager.savePatrons(patrons);
     }
+
+    public void deletePatron(int id) throws IOException{
+        Patron patron = findById(id);
+
+        if(patron == null){
+            throw new IllegalArgumentException("User id " + id + " not found.");
+        }
+
+        patrons.remove(patron);
+        FileManager.savePatrons(patrons);
+    }
 }
