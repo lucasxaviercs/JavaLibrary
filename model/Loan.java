@@ -17,7 +17,7 @@ public class Loan {
         this.patron = patron;
         this.loanDate = loanDate;
         this.dueDate = dueDate;
-        this.isReturned = false; // Default when created a loan
+        this.isReturned = isReturned;
     }
 
     // Getters
@@ -35,4 +35,18 @@ public class Loan {
     public void setLoanDate(LocalDate loanDate) { this.loanDate = loanDate; }
     public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
     public void setReturned(boolean isReturned) { this.isReturned = isReturned; }
+
+    @Override
+    public String toString () {
+        String status = isReturned ? "Returned" : "Active";
+        String dueInfo;
+
+        if (dueDate != null) {
+            dueInfo = "Due: " + dueDate;
+        } else {
+            dueInfo = "Due: N/A";
+        }
+
+        return "[ " + id + "| " + book.getTitle() "| " + patron.getName() + "] - Due: " + dueDate + " | Status " + status;
+    }
 }
