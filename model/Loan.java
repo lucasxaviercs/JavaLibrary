@@ -11,7 +11,7 @@ public class Loan {
     private boolean isReturned;
 
     // Constructor
-    Loan() (int id, Book book, Patron patron, LocalDate loanDate, LocalDate dueDate, boolean isReturned) {
+    public Loan(int id, Book book, Patron patron, LocalDate loanDate, LocalDate dueDate, boolean isReturned) {
         this.id = id;
         this.book = book;
         this.patron = patron;
