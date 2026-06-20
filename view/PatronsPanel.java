@@ -1,4 +1,4 @@
-package JavaLibrary.view;
+package view;
 
 public class PatronsPanel {
     
