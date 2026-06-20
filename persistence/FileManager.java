@@ -1,5 +1,7 @@
 package persistence;
 
+import JavaLibrary.model.Book;
+import JavaLibrary.model.Patron;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +9,8 @@ import model.Book;
 
 public class FileManager {
 
+    private static final String BOOKS_FILE = "books.csv";
+    private static final String PATRONS_FILE = "patrons.csv";
     private static final String BOOKS_FILE = "data/books.csv";
 
     // reads Books csv data and loads it on a Books List
@@ -56,4 +60,49 @@ public class FileManager {
         }
     }
 
+    public static void savePatrons(List<Patron> patrons) throws IOException{
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(PATRONS_FILE))){
+            bw.write("id;name;contact");
+            bw.newLine();
+
+            for(Patron p : patrons){
+                bw.write(String.join(";", String.valueOf(p.getId()), p.getName(), p.getContact()));
+
+                bw.newLine();
+            }
+        }
+    }
+
+    public static List<Patron> loadPatrons() throws IOException{
+        List<Patron> patrons = new ArrayList<>();
+
+        File f = new File(PATRONS_FILE);
+        if(!f.exists()){
+            return patrons;
+        }
+
+        try(BufferedReader br = new BufferedReader(new FileReader(f))){
+            br.readLine();
+
+            String line;
+            while((line = br.readLine()) != null){
+                if(line.isBlank()){
+                    continue;
+                }
+
+                String[] parts = line.split(";", -1);
+                int id = Integer.parseInt(parts[0]);
+                String name = parts[1];
+                String contact = parts[2];
+
+                Patron patron = new Patron(id, name, contact);
+                patrons.add(patron);
+                
+            }
+        }
+
+        return patrons;
+    }
+
+    
 }
