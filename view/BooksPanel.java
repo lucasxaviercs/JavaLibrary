@@ -1,6 +1,7 @@
 package view;
 
 import controller.BookController;
+import exception.PersistenceException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -126,6 +127,8 @@ public class BooksPanel extends JPanel implements ActionListener {
             JOptionPane.showMessageDialog(dialog, "Total copies must be a valid number", "Error", JOptionPane.ERROR_MESSAGE); 
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (PersistenceException ex) {
+            JOptionPane.showMessageDialog(dialog, "Could not save the book to file. " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         
     });
@@ -183,6 +186,8 @@ public class BooksPanel extends JPanel implements ActionListener {
 
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (PersistenceException ex) {
+                JOptionPane.showMessageDialog(dialog, "Could not save the book to file. " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             
         });
@@ -215,6 +220,8 @@ public class BooksPanel extends JPanel implements ActionListener {
                 refreshTable(controller.getAllBooks());
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (PersistenceException ex) {
+                JOptionPane.showMessageDialog(this, "Could not save the book to file. " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } 
 

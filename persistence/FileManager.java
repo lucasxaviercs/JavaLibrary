@@ -1,12 +1,13 @@
 package persistence;
 
+import exception.PersistenceException;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import model.Book;
-import model.Patron;
 import model.Loan;
+import model.Patron;
 
 public class FileManager {
 
@@ -16,7 +17,7 @@ public class FileManager {
     private static final String LOANS_FILE = "data/loans.csv";
 
     // reads Books csv data and loads it on a Books List
-    public List<Book> loadBooks(){
+    public List<Book> loadBooks() {
         List<Book> books = new ArrayList<>();
         File file = new File(BOOKS_FILE);
 
@@ -41,14 +42,14 @@ public class FileManager {
                 books.add(book);
             }
         } catch (IOException e) {
-            System.out.println("Error: failed to load books csv file");
+            throw new PersistenceException("Failed to load books from file", e);
         }
 
         return books;
     }
 
     // saves the Book list on the Books csv file
-    public void saveBooks(List<Book> books){
+    public void saveBooks(List<Book> books) throws IOException {
         try (PrintWriter pw = new PrintWriter(new FileWriter(BOOKS_FILE))) {
             pw.println("title,author,isbn,totalCopies,availableCopies");
 
@@ -57,12 +58,11 @@ public class FileManager {
                 pw.println(line);
             }
         } catch (IOException e) {
-            System.out.println("Error: failed to save books in csv file");
-            e.printStackTrace();
+            throw new PersistenceException("Failed to save books on file", e);
         }
     }
 
-    public static void savePatrons(List<Patron> patrons) throws IOException{
+    public static void savePatrons(List<Patron> patrons) {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(PATRONS_FILE))){
             bw.write("id;name;contact");
             bw.newLine();
@@ -72,10 +72,12 @@ public class FileManager {
 
                 bw.newLine();
             }
+        } catch (IOException e) {
+            throw new PersistenceException("Failed to save patrons on file", e);
         }
     }
 
-    public static List<Patron> loadPatrons() throws IOException{
+    public static List<Patron> loadPatrons() {
         List<Patron> patrons = new ArrayList<>();
 
         File f = new File(PATRONS_FILE);
@@ -101,12 +103,14 @@ public class FileManager {
                 patrons.add(patron);
                 
             }
+        } catch (IOException e) {
+            throw new PersistenceException("Failed to load patrons from file", e);
         }
 
         return patrons;
     }
 
-    public static List<Loan> loadLoans(List<Book> books, List<Patron> patrons) throws IOException {
+    public static List<Loan> loadLoans(List<Book> books, List<Patron> patrons) {
         List<Loan> loans = new ArrayList<>();
         
         File file = new File(LOANS_FILE);
@@ -138,12 +142,14 @@ public class FileManager {
                     loans.add( new Loan(id, foundBook, foundPatron, loanDate, dueDate, isReturned));
                 }
             }
-        } 
+        } catch (IOException e) {
+            throw new PersistenceException("Failed to load loans from file", e);
+        }
 
         return loans;
     }
 
-    public static void saveLoans(List<Loan> loans) throws IOException {
+    public static void saveLoans(List<Loan> loans) {
         File file = new File(LOANS_FILE);
         file.getParentFile().mkdirs(); // Ensure the file path exists
 
@@ -162,6 +168,8 @@ public class FileManager {
                 bw.write(line);
                 bw.newLine();
             }
+        } catch (IOException e) {
+            throw new PersistenceException("Failed to save loans to file", e);
         }
     }
 
