@@ -66,4 +66,26 @@ public class PatronController {
         patrons.remove(patron);
         FileManager.savePatrons(patrons);
     }
+
+    public List<Patron> searchPatrons(String query){
+        if(query == null || query.trim().isEmpty()){
+            return new ArrayList<>(patrons);
+        }
+
+        String q = query.trim().toLowerCase();
+
+        List<Patron> result = new ArrayList<>();
+        
+        for(Patron patron : patrons){
+            if(patron.getName().toLowerCase().contains(q) || String.valueOf(patron.getId()).contains(q)){
+                result.add(patron);
+            }
+        }
+
+        return result;
+    }
+
+    public List<Patron> getAllPatrons(){
+        return new ArrayList<>(patrons);
+    }
 }
