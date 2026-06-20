@@ -1,5 +1,56 @@
 package JavaLibrary.persistence;
 
+import JavaLibrary.model.Book;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class FileManager {
+
+    private static final String BOOKS_FILE = "books.csv";
+
+    // reads Books csv data and loads it on a Books List
+    public List<Book> loadBooks(){
+        List<Book> books = new ArrayList<>();
+        File file = new File(BOOKS_FILE);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line = br.readLine(); // read the header first so the next reads are data only
+
+            while((line = br.readLine()) != null){
+                if (line.isBlank()) continue;
+
+                String[] parts = line.split(",");
+                String title = parts[0];
+                String author = parts[1];
+                String isbn = parts[2];
+                int totalCopies = Integer.parseInt(parts[3]);
+                int availableCopies = Integer.parseInt(parts[4]);
+
+                Book book = new Book(title, author, isbn, totalCopies, availableCopies);
+                books.add(book);
+            }
+        } catch (IOException e) {
+            System.out.println("Error: failed to load books csv file");
+        }
+
+        return books;
+
+    }
+
+    // saves the Book list on the Books csv file
+    public void saveBooks(List<Book> books){
+        try (PrintWriter pw = new PrintWriter(new FileWriter(BOOKS_FILE))) {
+            pw.println("title,author,isbn,totalCopies,availableCopies");
+
+            for (Book b : books){
+                String line = b.getTitle() + "," + b.getAuthor() + "," + b.getIsbn() + "," + b.getTotalCopies() + "," + b.getAvailableCopies();
+                pw.println(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error: failed to save books in csv file");
+        }
+    }
+
     
 }

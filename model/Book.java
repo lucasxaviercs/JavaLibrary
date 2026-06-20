@@ -1,17 +1,27 @@
-class Book {
+package JavaLibrary.model;
+
+public class Book {
     private String title;
     private String author;
     private String isbn;
     private int totalCopies;
     private int availableCopies;
 
-    // Constructor
-    Book(String title, String author, String isbn, int totalCopies) {
+    // Constructors
+    public Book(String title, String author, String isbn, int totalCopies) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.totalCopies = totalCopies;
         this.availableCopies = totalCopies; // Initially, all copies are available
+    }
+
+    public Book(String title, String author, String isbn, int totalCopies, int availableCopies) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.totalCopies = totalCopies;
+        this.availableCopies = availableCopies;
     }
 
     // Getters and Setters
@@ -50,7 +60,7 @@ class Book {
     }
 
     // checks if the book is available for checkout
-    boolean isAvailable() {
+    public boolean isAvailable() {
         return availableCopies > 0;
     }
 
