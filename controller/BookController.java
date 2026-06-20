@@ -16,69 +16,65 @@ public class BookController {
     }
 
     public void addBook(String title, String author, String isbn, int totalCopies) {
-        if (title == null){
-            System.out.println("Error: you cannot add a book with no title!");
-            return;
+        if (title == null || title.isBlank()){
+            throw new IllegalArgumentException("You cannot add a book with no title!");
         } 
 
-        if (author == null) {
-            System.out.println("Error: you cannot add a book with no author!");
-            return;
+        if (author == null || author.isBlank()) {
+            throw new IllegalArgumentException("You cannot add a book with no author!");
         }
 
-        if(isbn == null) {
-            System.err.println("Error: you cannot add a book with no isbn!");
-            return;
+        if(isbn == null || isbn.isBlank()) {
+            throw new IllegalArgumentException("You cannot add a book with no isbn!");
         }
 
         if (totalCopies <= 0){
-            System.out.println("Error: books should have a positive quantity!");
-            return;
+            throw new IllegalArgumentException("Books must have a positive quantity!");
         }
 
         boolean isNew = books.stream().noneMatch(b -> b.getIsbn().equals(isbn));
 
         if(!isNew) {
-            System.out.println("Warning: there's already a book with this isbn.");
-            return;
+            throw new IllegalArgumentException("There's already a book with this isbn.");
         }
 
         Book newBook = new Book(title, author,  isbn, totalCopies);
         books.add(newBook);
         fileManager.saveBooks(books);
-        System.out.println("Log: book added with success!");
     }
 
     public void removeBook(String isbn){
         boolean bookExists = books.stream().anyMatch(b -> b.getIsbn().equals(isbn));
 
         if (!bookExists) {
-            System.out.println("Error: the book you're trying to remove does not exist!");
-            return;
+            throw new IllegalArgumentException("The book you're trying to remove does not exist!");
         }
 
         books.removeIf(b -> b.getIsbn().equals(isbn));
         fileManager.saveBooks(books);
-        System.out.println("Log: book removed successfully!");
     }
 
     public void updateBook(String isbn, String newTitle, String newAuthor, int newTotalCopies){
         Book b = findByIsbn(isbn);
 
         if (b == null) {
-            System.out.println("Error: the book you're trying to update does not exist!");
+            throw new IllegalArgumentException("The book you're trying to update does not exist!");
         }
 
-        if (newTitle != null && !newTitle.isBlank()) {
-            b.setTitle(newTitle);
+        if (newTitle != null || newTitle.isBlank()) {
+            throw new IllegalArgumentException("A book must have a title.");
         }
-        if (newAuthor != null && !newAuthor.isBlank()) {
-            b.setAuthor(newAuthor);
+        if (newAuthor == null || newAuthor.isBlank()) {
+            throw new IllegalArgumentException("A book must have a author.");
         }
 
-        if (newTotalCopies > 0) {
-            b.setTotalCopies(newTotalCopies);
+        if (newTotalCopies <= 0) {
+            throw new IllegalArgumentException("A book must have a positive quantity!");
         }
+
+        b.setTitle(newTitle);
+        b.setAuthor(newAuthor);
+        b.setTotalCopies(newTotalCopies);
 
         fileManager.saveBooks(books);
     }
