@@ -34,4 +34,9 @@ public class Patron {
         return this.contact;
     }
 
+    @Override
+    public String toString(){
+        return "["+id+"] " + name + " - " + contact;
+    }
+
 }
