@@ -1,4 +1,4 @@
-package JavaLibrary.model;
+package model;
 
 public class Patron {
     private int id;

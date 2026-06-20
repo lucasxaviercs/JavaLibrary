@@ -1,18 +1,22 @@
-package JavaLibrary.persistence;
+package persistence;
 
-import JavaLibrary.model.Book;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import model.Book;
 
 public class FileManager {
 
-    private static final String BOOKS_FILE = "books.csv";
+    private static final String BOOKS_FILE = "data/books.csv";
 
     // reads Books csv data and loads it on a Books List
     public List<Book> loadBooks(){
         List<Book> books = new ArrayList<>();
         File file = new File(BOOKS_FILE);
+
+        if (!file.exists()) {
+            return books; // arquivo ainda não existe, lista vazia é o esperado
+        }
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line = br.readLine(); // read the header first so the next reads are data only
@@ -35,7 +39,6 @@ public class FileManager {
         }
 
         return books;
-
     }
 
     // saves the Book list on the Books csv file
@@ -49,8 +52,8 @@ public class FileManager {
             }
         } catch (IOException e) {
             System.out.println("Error: failed to save books in csv file");
+            e.printStackTrace();
         }
     }
 
-    
 }
