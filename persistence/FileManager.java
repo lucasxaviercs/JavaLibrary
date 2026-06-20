@@ -1,17 +1,16 @@
 package persistence;
 
-import JavaLibrary.model.Book;
-import JavaLibrary.model.Patron;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import model.Book;
+import model.Patron;
 
 public class FileManager {
 
-    private static final String BOOKS_FILE = "books.csv";
-    private static final String PATRONS_FILE = "patrons.csv";
+    
     private static final String BOOKS_FILE = "data/books.csv";
+    private static final String PATRONS_FILE = "data/patrons.csv";
 
     // reads Books csv data and loads it on a Books List
     public List<Book> loadBooks(){
