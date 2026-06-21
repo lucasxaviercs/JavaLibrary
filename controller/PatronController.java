@@ -3,7 +3,6 @@ package controller;
 import model.Patron;
 import persistence.FileManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,7 @@ public class PatronController {
     private int nextId;
     private FileManager fileManager;
 
-    public PatronController(){
+    public PatronController(FileManager fileManager){
         this.fileManager = fileManager;
         this.patrons = fileManager.loadPatrons();
 
@@ -35,7 +34,7 @@ public class PatronController {
 
         Patron patron = new Patron(nextId++, name.trim(), contact.trim());
         patrons.add(patron);
-        FileManager.savePatrons(patrons);
+        fileManager.savePatrons(patrons);
     }
 
     public void editPatron(int id, String newName, String newContact){
@@ -51,7 +50,7 @@ public class PatronController {
 
         patron.setName(newName.trim());
         patron.setContact(newContact.trim());
-        FileManager.savePatrons(patrons);
+        fileManager.savePatrons(patrons);
     }
 
     public void deletePatron(int id){
@@ -62,7 +61,7 @@ public class PatronController {
         }
 
         patrons.remove(patron);
-        FileManager.savePatrons(patrons);
+        fileManager.savePatrons(patrons);
     }
 
     public List<Patron> searchPatrons(String query){

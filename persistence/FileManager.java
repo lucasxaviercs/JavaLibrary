@@ -62,7 +62,7 @@ public class FileManager {
         }
     }
 
-    public static void savePatrons(List<Patron> patrons) {
+    public void savePatrons(List<Patron> patrons) {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(PATRONS_FILE))){
             bw.write("id;name;contact");
             bw.newLine();
@@ -77,7 +77,7 @@ public class FileManager {
         }
     }
 
-    public static List<Patron> loadPatrons() {
+    public List<Patron> loadPatrons() {
         List<Patron> patrons = new ArrayList<>();
 
         File f = new File(PATRONS_FILE);
