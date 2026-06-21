@@ -32,7 +32,7 @@ public class LoanPanel extends JPanel implements ActionListener {
     private void initComponents() {
         setLayout(new BorderLayout());
 
-        tableModel = new DefaultTableModel(new Object[]{"Loan ID", "Book Title", "Patron Name", "Loan Date", "Due Date", "Status"}, 0);
+        tableModel = new DefaultTableModel(new Object[]{"Loan ID", "Book Title", "Patron ID" ,"Patron Name", "Loan Date", "Due Date", "Status"}, 0);
         loansTable = new JTable(tableModel);
 
         searchField = new JTextField();
@@ -73,6 +73,7 @@ public class LoanPanel extends JPanel implements ActionListener {
             tableModel.addRow(new Object[]{
                     l.getId(),
                     l.getBook().getTitle(),
+                    l.getPatron().getId(),
                     l.getPatron().getName(),
                     l.getLoanDate().toString(),
                     l.getDueDate().toString(),
