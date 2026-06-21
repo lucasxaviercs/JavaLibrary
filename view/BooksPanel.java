@@ -233,4 +233,20 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
             openUpdateDialog();
         }
     }   
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+        // Atualiza a tabela quando a aba Books for clicada
+        refreshTable(controller.getAllBooks());
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {  }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {  }
+
+
+    @Override
+    public void componentHidden(ComponentEvent e) {  }
 }
