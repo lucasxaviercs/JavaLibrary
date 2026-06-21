@@ -5,6 +5,8 @@ import exception.PersistenceException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -12,7 +14,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import model.Book;
 
-public class BooksPanel extends JPanel implements ActionListener {
+public class BooksPanel extends JPanel implements ActionListener, ComponentListener {
     private BookController controller;
     private JTable booksTable;
     private DefaultTableModel tableModel;
@@ -69,12 +71,7 @@ public class BooksPanel extends JPanel implements ActionListener {
         removeBookButton.addActionListener(this);
         updateBookButton.addActionListener(this);
 
-        this.addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentShown(java.awt.event.ComponentEvent e) {
-                refreshTable(controller.getAllBooks());
-            }
-        }
+        this.addComponentListener(this);
     }
 
     private void refreshTable(List<Book> books){
