@@ -47,6 +47,6 @@ public class Loan {
             dueInfo = "Due: N/A";
         }
 
-        return "[ " + id + "| " + book.getTitle() "| " + patron.getName() + "] - Due: " + dueDate + " | Status " + status;
+        return "[ " + id + "| " + book.getTitle() + "| " + patron.getName() + "] - Due: " + dueDate + " | Status " + status;
     }
 }

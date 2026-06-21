@@ -43,7 +43,7 @@ public class BooksPanel extends JPanel implements ActionListener {
         top.add(new JLabel("Buscar: "), BorderLayout.WEST);
         top.add(searchField, BorderLayout.CENTER);
 
-        JPanel buttonsPanel = new JPanel(new BorderLayout());
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(addBookButton);
         buttonsPanel.add(updateBookButton);
         buttonsPanel.add(removeBookButton);

@@ -31,12 +31,12 @@ public class FileManager {
             while((line = br.readLine()) != null){
                 if (line.isBlank()) continue;
 
-                String[] parts = line.split(",");
-                String title = parts[0];
-                String author = parts[1];
-                String isbn = parts[2];
-                int totalCopies = Integer.parseInt(parts[3]);
-                int availableCopies = Integer.parseInt(parts[4]);
+                String[] parts = line.trim().split(",");
+                String title = parts[0].trim();
+                String author = parts[1].trim();
+                String isbn = parts[2].trim();
+                int totalCopies = Integer.parseInt(parts[3].trim());
+                int availableCopies = Integer.parseInt(parts[4].trim());
 
                 Book book = new Book(title, author, isbn, totalCopies, availableCopies);
                 books.add(book);
@@ -49,7 +49,7 @@ public class FileManager {
     }
 
     // saves the Book list on the Books csv file
-    public void saveBooks(List<Book> books) throws IOException {
+    public void saveBooks(List<Book> books) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(BOOKS_FILE))) {
             pw.println("title,author,isbn,totalCopies,availableCopies");
 
@@ -95,9 +95,9 @@ public class FileManager {
                 }
 
                 String[] parts = line.split(";", -1);
-                int id = Integer.parseInt(parts[0]);
-                String name = parts[1];
-                String contact = parts[2];
+                int id = Integer.parseInt(parts[0].trim());
+                String name = parts[1].trim();
+                String contact = parts[2].trim();
 
                 Patron patron = new Patron(id, name, contact);
                 patrons.add(patron);
@@ -126,12 +126,12 @@ public class FileManager {
                 if (line.isBlank()) continue;
 
                 String[] parts = line.split(",");
-                int id = Integer.parseInt(parts[0]);
-                int patronId = Integer.parseInt(parts[1]);
-                String bookIsbn = parts[2];
-                LocalDate loanDate = LocalDate.parse(parts[3]);
-                LocalDate dueDate = LocalDate.parse(parts[4]);
-                boolean isReturned = Boolean.parseBoolean(parts[5]);
+                int id = Integer.parseInt(parts[0].trim());
+                int patronId = Integer.parseInt(parts[1].trim());
+                String bookIsbn = parts[2].trim();
+                LocalDate loanDate = LocalDate.parse(parts[3].trim());
+                LocalDate dueDate = LocalDate.parse(parts[4].trim());
+                boolean isReturned = Boolean.parseBoolean(parts[5].trim());
 
                 // Search the complete object in the lists
                 Patron foundPatron = findPatronById(patrons, patronId);
