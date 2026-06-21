@@ -40,7 +40,11 @@ public class PatronsPanel extends JPanel implements ActionListener {
         updatePatronButton = new JButton("Edit");
         removePatronButton = new JButton("Delete");
 
-        JPanel buttoPanel = new JPanel(new FlowLayout());
+        JPanel top = new JPanel(new BorderLayout());
+        top.add(new JLabel("Search: "), BorderLayout.WEST);
+        top.add(searchField, BorderLayout.CENTER);
+
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(addPatronButton);
         buttonsPanel.add(updatePatronButton);
         buttonsPanel.add(removePatronButton);
@@ -148,10 +152,15 @@ public class PatronsPanel extends JPanel implements ActionListener {
         dialog.add(new Label("Contact:"));
         dialog.add(contactField);
 
+        JButton confirmButton = new JButton("Confirm");
+        JButton cancelButton = new JButton("Cancel");
+        dialog.add(confirmButton);
+        dialog.add(cancelButton);
+
         confirmButton.addActionListener(ev -> {
             try{
                 controller.editPatron(id, nameField.getText(), contactField.getText());
-                refreshTable(controller.getAllPatrons);
+                refreshTable(controller.getAllPatrons());
                 dialog.dispose();
             } catch (IllegalArgumentException ex){
                 JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
