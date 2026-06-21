@@ -77,9 +77,9 @@ public class LoanController {
 
     public void checkIn(int loanId) {
         Loan loanToReturn = loans.stream()
-                .filter(l -> l.getId() == loanId)
-                .findFirst()
-                .orElse(null);
+                                .filter(l -> l.getId() == loanId)
+                                .findFirst()
+                                .orElse(null);
 
         if (loanToReturn == null) {
             throw new IllegalArgumentException("Loan with ID " + loanId + " not found.");
