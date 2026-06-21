@@ -28,6 +28,10 @@ public class LoanController {
         return new ArrayList<>(loans); // copy of the original list
     }
 
+    public List<Loan> getLoansReference(){
+        return loans;
+    }
+
     public List<Loan> getActiveLoans() {
         return loans.stream()
                 .filter(loan -> loan.getIsReturned() == false) // book not returned
