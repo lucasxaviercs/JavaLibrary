@@ -3,20 +3,17 @@ package controller;
 import model.Patron;
 import persistence.FileManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PatronController {
     private List<Patron> patrons;
     private int nextId;
+    private FileManager fileManager;
 
-    public PatronController(){
-        try{
-            patrons = FileManager.loadPatrons();
-        }catch(IOException e){
-            patrons = new ArrayList<>();
-        }
+    public PatronController(FileManager fileManager){
+        this.fileManager = fileManager;
+        this.patrons = fileManager.loadPatrons();
 
         nextId = patrons.stream().mapToInt(Patron::getId).max().orElse(0) + 1;
     }
@@ -30,17 +27,17 @@ public class PatronController {
         return null;
     }
 
-    public void addPatron(String name, String contact) throws IOException{
+    public void addPatron(String name, String contact){
         if(name == null || name.trim().isEmpty()){
             throw new IllegalArgumentException("The user's name can not be empty");
         }
 
         Patron patron = new Patron(nextId++, name.trim(), contact.trim());
         patrons.add(patron);
-        FileManager.savePatrons(patrons);
+        fileManager.savePatrons(patrons);
     }
 
-    public void editPatron(int id, String newName, String newContact) throws IOException{
+    public void editPatron(int id, String newName, String newContact){
         Patron patron = findById(id);
 
         if(patron == null){
@@ -53,10 +50,10 @@ public class PatronController {
 
         patron.setName(newName.trim());
         patron.setContact(newContact.trim());
-        FileManager.savePatrons(patrons);
+        fileManager.savePatrons(patrons);
     }
 
-    public void deletePatron(int id) throws IOException{
+    public void deletePatron(int id){
         Patron patron = findById(id);
 
         if(patron == null){
@@ -64,7 +61,7 @@ public class PatronController {
         }
 
         patrons.remove(patron);
-        FileManager.savePatrons(patrons);
+        fileManager.savePatrons(patrons);
     }
 
     public List<Patron> searchPatrons(String query){
