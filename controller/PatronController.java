@@ -10,13 +10,11 @@ import java.util.List;
 public class PatronController {
     private List<Patron> patrons;
     private int nextId;
+    private FileManager fileManager;
 
     public PatronController(){
-        try{
-            patrons = FileManager.loadPatrons();
-        }catch(IOException e){
-            patrons = new ArrayList<>();
-        }
+        this.fileManager = fileManager;
+        this.patrons = fileManager.loadPatrons();
 
         nextId = patrons.stream().mapToInt(Patron::getId).max().orElse(0) + 1;
     }
@@ -30,7 +28,7 @@ public class PatronController {
         return null;
     }
 
-    public void addPatron(String name, String contact) throws IOException{
+    public void addPatron(String name, String contact){
         if(name == null || name.trim().isEmpty()){
             throw new IllegalArgumentException("The user's name can not be empty");
         }
@@ -40,7 +38,7 @@ public class PatronController {
         FileManager.savePatrons(patrons);
     }
 
-    public void editPatron(int id, String newName, String newContact) throws IOException{
+    public void editPatron(int id, String newName, String newContact){
         Patron patron = findById(id);
 
         if(patron == null){
@@ -56,7 +54,7 @@ public class PatronController {
         FileManager.savePatrons(patrons);
     }
 
-    public void deletePatron(int id) throws IOException{
+    public void deletePatron(int id){
         Patron patron = findById(id);
 
         if(patron == null){
