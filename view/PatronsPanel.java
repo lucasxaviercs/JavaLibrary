@@ -1,6 +1,7 @@
 package view;
 
 import controller.PatronController;
+import exception.PatronHasActiveLoansException;
 import exception.PersistenceException;
 import model.Patron;
 
@@ -202,7 +203,9 @@ public class PatronsPanel extends JPanel implements ActionListener {
             try {
                 controller.deletePatron(id);
                 refreshTable(controller.getAllPatrons());
-            } catch(PersistenceException ex){
+            } catch(PatronHasActiveLoansException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }catch(PersistenceException ex){
                 JOptionPane.showMessageDialog(this, "Could not save to file. " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }

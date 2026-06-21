@@ -1,21 +1,30 @@
 package controller;
 
 import model.Patron;
+import model.Loan;
 import persistence.FileManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import exception.PatronHasActiveLoansException;
+
 public class PatronController {
     private List<Patron> patrons;
+    private List<Loan> loans;
     private int nextId;
     private FileManager fileManager;
 
     public PatronController(FileManager fileManager){
         this.fileManager = fileManager;
         this.patrons = fileManager.loadPatrons();
+        this.loans = new ArrayList<>();
 
         nextId = patrons.stream().mapToInt(Patron::getId).max().orElse(0) + 1;
+    }
+
+    public void setLoans(List<Loan> loans){
+        this.loans = loans;
     }
 
     public Patron findById(int id){
@@ -53,11 +62,17 @@ public class PatronController {
         fileManager.savePatrons(patrons);
     }
 
-    public void deletePatron(int id){
+    public void deletePatron(int id) throws PatronHasActiveLoansException{
         Patron patron = findById(id);
 
         if(patron == null){
             throw new IllegalArgumentException("User id " + id + " not found.");
+        }
+
+        boolean hasActiveLoans = loans.stream().anyMatch(l -> !l.getIsReturned() && l.getPatron().getId() == id);
+
+        if(hasActiveLoans){
+            throw new PatronHasActiveLoansException(patron.getName());
         }
 
         patrons.remove(patron);

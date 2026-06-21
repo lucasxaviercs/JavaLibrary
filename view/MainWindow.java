@@ -20,6 +20,8 @@ public class MainWindow extends JFrame {
             BookController bookController = new BookController(fileManager);
             PatronController patronController = new PatronController(fileManager);
             LoanController loanController = new LoanController(fileManager, bookController, patronController);
+            patronController.setLoans(loanController.getLoansReference());
+
             JTabbedPane tabs = new JTabbedPane();
             tabs.addTab("Books", new BooksPanel(bookController));
             tabs.addTab("Patrons", new PatronsPanel(patronController));
