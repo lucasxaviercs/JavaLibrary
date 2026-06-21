@@ -68,6 +68,13 @@ public class BooksPanel extends JPanel implements ActionListener {
         addBookButton.addActionListener(this);
         removeBookButton.addActionListener(this);
         updateBookButton.addActionListener(this);
+
+        this.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                refreshTable(controller.getAllBooks());
+            }
+        }
     }
 
     private void refreshTable(List<Book> books){
