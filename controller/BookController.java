@@ -61,20 +61,26 @@ public class BookController {
             throw new IllegalArgumentException("The book you're trying to update does not exist!");
         }
 
-        if (newTitle != null || newTitle.isBlank()) {
+        if (newTitle == null || newTitle.isBlank()) {
             throw new IllegalArgumentException("A book must have a title.");
         }
         if (newAuthor == null || newAuthor.isBlank()) {
             throw new IllegalArgumentException("A book must have a author.");
         }
-
         if (newTotalCopies <= 0) {
             throw new IllegalArgumentException("A book must have a positive quantity!");
+        }
+
+        int copiesOnLoan = b.getTotalCopies() - b.getAvailableCopies();
+        if (newTotalCopies < copiesOnLoan) {
+            throw new IllegalArgumentException(
+                "Cannot set total copies below " + copiesOnLoan + " — that many are currently on loan.");
         }
 
         b.setTitle(newTitle);
         b.setAuthor(newAuthor);
         b.setTotalCopies(newTotalCopies);
+        b.setAvailableCopies(newTotalCopies - copiesOnLoan);
 
         fileManager.saveBooks(books);
     }
