@@ -23,11 +23,12 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
     private JButton updateBookButton;
     private JButton removeBookButton;
 
+    // the constructor assigns a BookController so that it can perform actions in Books
     public BooksPanel(BookController controller){
         this.controller = controller;
-        initComponents();
-        initListeners();
-        refreshTable(controller.getAllBooks());
+        initComponents(); // call method to initialize all the components
+        initListeners(); // call method to create listeners
+        refreshTable(controller.getAllBooks()); // gets all books to appear in the table
     }
 
     private void initComponents(){
@@ -56,6 +57,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
     }
 
     private void initListeners(){
+        // for every action on the search bar, it will search the books
         searchField.getDocument().addDocumentListener(new DocumentListener(){
             @Override
             public void insertUpdate(DocumentEvent e){ search(); }
@@ -74,6 +76,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
         this.addComponentListener(this);
     }
 
+    // returns the table with the books on the list given
     private void refreshTable(List<Book> books){
         tableModel.setRowCount(0);
         for (Book b : books) {
@@ -81,6 +84,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
         }
     }
 
+    // return a book list given a search and calls refreshTable
     private void search(){
         List<Book> result = null;
         String query = searchField.getText();
@@ -94,6 +98,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
         refreshTable(result);
     }
 
+    // when adding a book we need a form for the user to input data
     private void openAddDialog() {
     JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Add Book", true);
     dialog.setLayout(new GridLayout(5, 2));
@@ -119,11 +124,13 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
 
     confirmButton.addActionListener(ev -> {
         try {
+            // gets user input
             String title = titleField.getText();
             String author = authorField.getText();
             String isbn = isbnField.getText();
             int totalCopies = Integer.parseInt(totalCopiesField.getText());
 
+            // calls controller to perform the action
             controller.addBook(title, author, isbn, totalCopies);
             refreshTable(controller.getAllBooks());
             dialog.dispose(); 
@@ -143,7 +150,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
     dialog.setLocationRelativeTo(this);
     dialog.setVisible(true);
 }
-
+    // when updating a book we need a form for the user to input data
     private void openUpdateDialog() {
         int selectedLine = booksTable.getSelectedRow();
 
@@ -178,10 +185,12 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
 
         confirmButton.addActionListener(ev -> {
             try {
+                // gets user input
                 String title = titleField.getText();
                 String author = authorField.getText();
                 int totalCopies = Integer.parseInt(totalCopiesField.getText());
 
+                // calls the controller to perform de action
                 controller.updateBook(isbn, title, author, totalCopies);
                 refreshTable(controller.getAllBooks());
                 dialog.dispose();
@@ -210,6 +219,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
         } 
         
         if (e.getSource() == removeBookButton){
+            // to remove a book, the user must first select a book row 
             int selectedLine = booksTable.getSelectedRow();
 
             if (selectedLine == -1){
@@ -236,7 +246,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
 
     @Override
     public void componentShown(ComponentEvent e) {
-        // Atualiza a tabela quando a aba Books for clicada
+        // refreshes the table when the user comes back to the Book tab
         refreshTable(controller.getAllBooks());
     }
 
