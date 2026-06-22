@@ -22,7 +22,7 @@ public class FileManager {
         File file = new File(BOOKS_FILE);
 
         if (!file.exists()) {
-            return books; // arquivo ainda não existe, lista vazia é o esperado
+            return books; // if the file does not exist, we return an empty list
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -31,7 +31,7 @@ public class FileManager {
             while((line = br.readLine()) != null){
                 if (line.isBlank()) continue;
 
-                String[] parts = line.trim().split(",");
+                String[] parts = line.trim().split(","); // we split to separate the fields in the csv file
                 String title = parts[0].trim();
                 String author = parts[1].trim();
                 String isbn = parts[2].trim();
@@ -42,6 +42,7 @@ public class FileManager {
                 books.add(book);
             }
         } catch (IOException e) {
+            // the IOException is handled by throwing PersistenceException so that we caught it in a JOptionPane error message in the GUI
             throw new PersistenceException("Failed to load books from file", e);
         }
 
@@ -53,6 +54,7 @@ public class FileManager {
         try (PrintWriter pw = new PrintWriter(new FileWriter(BOOKS_FILE))) {
             pw.println("title,author,isbn,totalCopies,availableCopies");
 
+            // for each book on the list, we assemble the csv line with "," separator
             for (Book b : books){
                 String line = b.getTitle() + "," + b.getAuthor() + "," + b.getIsbn() + "," + b.getTotalCopies() + "," + b.getAvailableCopies();
                 pw.println(line);
