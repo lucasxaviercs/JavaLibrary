@@ -6,6 +6,7 @@ import persistence.FileManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import exception.PatronHasActiveLoansException;
 
@@ -107,6 +108,16 @@ public class PatronController {
         }
 
         return result;
+    }
+
+    public List<Loan> getPatronHistory(int patronId) {
+        if (loans == null || loans.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        return loans.stream()
+                .filter(l -> l.getPatron().getId() == patronId)
+                .collect(Collectors.toList());
     }
 
     // Returns all patrons

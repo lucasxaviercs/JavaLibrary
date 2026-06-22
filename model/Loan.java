@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Loan {
     private int id;
@@ -35,6 +36,23 @@ public class Loan {
     public void setLoanDate(LocalDate loanDate) { this.loanDate = loanDate; }
     public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
     public void setReturned(boolean isReturned) { this.isReturned = isReturned; }
+
+    public double getFineAmount() {
+        
+        if (isReturned) { return 0.0; }
+        
+        LocalDate today = LocalDate.now();
+        
+        if (today.isAfter(dueDate)) {
+            long daysLate = ChronoUnit.DAYS.between(dueDate, today);
+            
+            double dailyRate = 1.50; 
+            
+            return daysLate * dailyRate;
+        }
+        
+        return 0.0; 
+    }
 
     @Override
     public String toString () {

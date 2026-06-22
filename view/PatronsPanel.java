@@ -8,6 +8,7 @@ import model.Patron;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Dimension;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -33,6 +34,7 @@ public class PatronsPanel extends JPanel implements ActionListener {
     private JButton addPatronButton;
     private JButton updatePatronButton;
     private JButton removePatronButton;
+    private JButton historyButton;
 
     /*
      * Constructor initializes UI and loads data
@@ -55,6 +57,7 @@ public class PatronsPanel extends JPanel implements ActionListener {
         addPatronButton = new JButton("Add Patron");
         updatePatronButton = new JButton("Edit");
         removePatronButton = new JButton("Delete");
+        historyButton = new JButton("View History");
 
         JPanel top = new JPanel(new BorderLayout());
         top.add(new JLabel("Search: "), BorderLayout.WEST);
@@ -64,6 +67,7 @@ public class PatronsPanel extends JPanel implements ActionListener {
         buttonsPanel.add(addPatronButton);
         buttonsPanel.add(updatePatronButton);
         buttonsPanel.add(removePatronButton);
+        buttonsPanel.add(historyButton);
 
         add(top, BorderLayout.NORTH);
         add(new JScrollPane(patronsTable), BorderLayout.CENTER);
@@ -85,6 +89,7 @@ public class PatronsPanel extends JPanel implements ActionListener {
         addPatronButton.addActionListener(this);
         updatePatronButton.addActionListener(this);
         removePatronButton.addActionListener(this);
+        historyButton.addActionListener(this);
     }
 
     // Refreshes table with a list of patrons
@@ -229,6 +234,40 @@ public class PatronsPanel extends JPanel implements ActionListener {
             }catch(PersistenceException ex){
                 JOptionPane.showMessageDialog(this, "Could not save to file. " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+        }
+
+        if(e.getSource() == historyButton){
+            int selectedRow = patronsTable.getSelectedRow();
+
+            if(selectedRow == -1){
+                JOptionPane.showMessageDialog(this, "Select a patron to view their history!", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            int patronId = (int) tableModel.getValueAt(selectedRow, 0);
+            String patronName = (String) tableModel.getValueAt(selectedRow, 1);
+            
+            java.util.List<model.Loan> history = controller.getPatronHistory(patronId);
+
+            if(history.isEmpty()){
+                JOptionPane.showMessageDialog(this, patronName + " has no loan history.", "Patron History", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            StringBuilder sb = new StringBuilder("History for " + patronName + ":\n\n");
+            for(model.Loan l : history){
+                String status = l.getIsReturned() ? "Returned" : "Active";
+                sb.append("- ").append(l.getBook().getTitle())
+                  .append(" | Due: ").append(l.getDueDate())
+                  .append(" | Status: ").append(status).append("\n");
+            }
+
+            JTextArea textArea = new JTextArea(sb.toString());
+            textArea.setEditable(false);
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(400, 200));
+
+            JOptionPane.showMessageDialog(this, scrollPane, "Patron History", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
