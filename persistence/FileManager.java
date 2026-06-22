@@ -64,11 +64,13 @@ public class FileManager {
         }
     }
 
+    // Saves the list of patrons into the CSV file
     public void savePatrons(List<Patron> patrons) {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(PATRONS_FILE))){
-            bw.write("id;name;contact");
+            bw.write("id;name;contact"); // Writes the file header
             bw.newLine();
 
+            // Writes each patron as a line in the file
             for(Patron p : patrons){
                 bw.write(String.join(";", String.valueOf(p.getId()), p.getName(), p.getContact()));
 
@@ -79,28 +81,34 @@ public class FileManager {
         }
     }
 
+    // Loads patrons form the CSV file
     public List<Patron> loadPatrons() {
         List<Patron> patrons = new ArrayList<>();
 
         File f = new File(PATRONS_FILE);
+
+        // If file does not exist, return empty list
         if(!f.exists()){
             return patrons;
         }
 
         try(BufferedReader br = new BufferedReader(new FileReader(f))){
-            br.readLine();
+            br.readLine(); // Skip header line
 
             String line;
             while((line = br.readLine()) != null){
+                // Ignore empty lines
                 if(line.isBlank()){
                     continue;
                 }
 
+                // Split line into fields
                 String[] parts = line.split(";", -1);
                 int id = Integer.parseInt(parts[0].trim());
                 String name = parts[1].trim();
                 String contact = parts[2].trim();
 
+                // Create patron object and add to list
                 Patron patron = new Patron(id, name, contact);
                 patrons.add(patron);
                 

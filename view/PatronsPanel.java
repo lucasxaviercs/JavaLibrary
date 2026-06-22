@@ -14,15 +14,29 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
+
+/*
+ * GUI panel for managing library patrons.
+ * Allows adding, editing, deleting and searching patrons
+ */
 public class PatronsPanel extends JPanel implements ActionListener {
-    private PatronController controller;
+    private PatronController controller; // Controller that handles business logic
+
+    // Table to display patrons
     private JTable patronsTable;
     private DefaultTableModel tableModel;
+
+    // Search field
     private JTextField searchField;
+
+    // Buttons for actions
     private JButton addPatronButton;
     private JButton updatePatronButton;
     private JButton removePatronButton;
 
+    /*
+     * Constructor initializes UI and loads data
+     */
     public PatronsPanel(PatronController controller){
         this.controller = controller;
         initComponents();
@@ -30,6 +44,7 @@ public class PatronsPanel extends JPanel implements ActionListener {
         refreshTable(controller.getAllPatrons());
     }
 
+    // Initialize UI components
     private void initComponents(){
         setLayout(new BorderLayout());
 
@@ -56,6 +71,7 @@ public class PatronsPanel extends JPanel implements ActionListener {
 
     }
 
+    // Initializes event listeners
     private void initListeners(){
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -71,6 +87,7 @@ public class PatronsPanel extends JPanel implements ActionListener {
         removePatronButton.addActionListener(this);
     }
 
+    // Refreshes table with a list of patrons
     private void refreshTable(List<Patron> patrons){
         tableModel.setRowCount(0);
         for(Patron patron : patrons){
@@ -78,6 +95,7 @@ public class PatronsPanel extends JPanel implements ActionListener {
         }
     }
 
+    // Performs search based on input text
     private void search(){
         String query = searchField.getText();
         List<Patron> result;
@@ -91,6 +109,7 @@ public class PatronsPanel extends JPanel implements ActionListener {
         refreshTable(result);
     }
 
+    // Opens dialog to add a new patron
     private void openAddDialog(){
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Add Patron", true);
         dialog.setLayout(new GridLayout(3, 2));
@@ -128,6 +147,7 @@ public class PatronsPanel extends JPanel implements ActionListener {
 
     }
 
+    // Opens dialog to edit selected patron
     private void openUpdateDialog(){
         int selectedRow = patronsTable.getSelectedRow();
 
@@ -179,6 +199,7 @@ public class PatronsPanel extends JPanel implements ActionListener {
         
     }
 
+    // Handles button clicks
     @Override
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == addPatronButton){

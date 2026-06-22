@@ -9,24 +9,32 @@ import java.util.List;
 
 import exception.PatronHasActiveLoansException;
 
-public class PatronController {
-    private List<Patron> patrons;
-    private List<Loan> loans;
-    private int nextId;
-    private FileManager fileManager;
 
+/*
+ * Controller responsible for managing library patrons.
+ * Handles add, edit, delete, search and persistence operations.
+ */
+public class PatronController {
+    private List<Patron> patrons; // List of all registered patrons
+    private List<Loan> loans; // List of all loans (used to check active loans)
+    private int nextId; // Auto-increment ID for new patrons
+    private FileManager fileManager; // Handles flie saving and loading
+
+    // Constructor loads patrons from file and initializes data
     public PatronController(FileManager fileManager){
         this.fileManager = fileManager;
         this.patrons = fileManager.loadPatrons();
         this.loans = new ArrayList<>();
-
+        // Sets next ID based on the highest existing ID
         nextId = patrons.stream().mapToInt(Patron::getId).max().orElse(0) + 1;
     }
-
+    
+    // Sets the lis of loans (used externally)
     public void setLoans(List<Loan> loans){
         this.loans = loans;
     }
 
+    // Finds a patron by ID
     public Patron findById(int id){
         for(Patron patron : patrons){
             if(patron.getId() == id){
@@ -36,6 +44,7 @@ public class PatronController {
         return null;
     }
 
+    // Adds a new patron
     public void addPatron(String name, String contact){
         if(name == null || name.trim().isEmpty()){
             throw new IllegalArgumentException("The user's name can not be empty");
@@ -46,6 +55,7 @@ public class PatronController {
         fileManager.savePatrons(patrons);
     }
 
+    // Edits an existing patron
     public void editPatron(int id, String newName, String newContact){
         Patron patron = findById(id);
 
@@ -62,6 +72,7 @@ public class PatronController {
         fileManager.savePatrons(patrons);
     }
 
+    // Deletes a patron (only if no active loans)
     public void deletePatron(int id) throws PatronHasActiveLoansException{
         Patron patron = findById(id);
 
@@ -79,6 +90,7 @@ public class PatronController {
         fileManager.savePatrons(patrons);
     }
 
+    // Searches patrons by name or ID
     public List<Patron> searchPatrons(String query){
         if(query == null || query.trim().isEmpty()){
             return new ArrayList<>(patrons);
@@ -97,6 +109,7 @@ public class PatronController {
         return result;
     }
 
+    // Returns all patrons
     public List<Patron> getAllPatrons(){
         return new ArrayList<>(patrons);
     }
