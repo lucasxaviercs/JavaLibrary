@@ -8,6 +8,8 @@ import javax.swing.*;
 import persistence.FileManager;
 
 public class MainWindow extends JFrame {
+    // adjust the JFrame settings and instantiates a Book, a Patron and a Loan Controller
+    // also adds a Book, a Patron and a Loan panel to the tabs
     public MainWindow (){
         setTitle("JavaLibrary");
         setSize(900,600);
