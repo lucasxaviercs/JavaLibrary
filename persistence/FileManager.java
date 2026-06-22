@@ -120,8 +120,11 @@ public class FileManager {
         return patrons;
     }
 
+    /*
+     * Loads loan records from the CSV file.
+     */
     public static List<Loan> loadLoans(List<Book> books, List<Patron> patrons) {
-        List<Loan> loans = new ArrayList<>();
+        List<Loan> loans = new ArrayList<>(); // Initializes an empty list to store the loaded loans
         
         File file = new File(LOANS_FILE);
         if (!file.exists()) {
@@ -132,8 +135,9 @@ public class FileManager {
             br.readLine(); // Ignore the header
 
             String line;
+            // Reads the file line by line until the end
             while ( (line = br.readLine()) != null) {
-                if (line.isBlank()) continue;
+                if (line.isBlank()) continue; // Skips any blank lines to prevent parsing errors
 
                 String[] parts = line.split(",");
                 int id = Integer.parseInt(parts[0].trim());
@@ -143,7 +147,7 @@ public class FileManager {
                 LocalDate dueDate = LocalDate.parse(parts[4].trim());
                 boolean isReturned = Boolean.parseBoolean(parts[5].trim());
 
-                // Search the complete object in the lists
+                // Uses auxiliary methods to find the actual objects in memory
                 Patron foundPatron = findPatronById(patrons, patronId);
                 Book foundBook = findBookByIsbn(books, bookIsbn);
 
@@ -159,15 +163,21 @@ public class FileManager {
         return loans;
     }
 
+    /*
+     * Saves the list of loans to the CSV file.
+     */
     public static void saveLoans(List<Loan> loans) {
         File file = new File(LOANS_FILE);
         file.getParentFile().mkdirs(); // Ensure the file path exists
 
         try (BufferedWriter bw = new BufferedWriter( new FileWriter(file) ) ) {
-            bw.write("id,patronId,bookIsbn,loanDate,dueDate,isReturned"); // Header
+            // Writes the CSV header defining the column structure
+            bw.write("id,patronId,bookIsbn,loanDate,dueDate,isReturned");
             bw.newLine();
             
+            // Iterates through every loan in the memory list
             for (Loan l : loans) {
+                // Formats the loan attributes into a single comma-separated string
                 String line = l.getId() + "," + 
                               l.getPatron().getId() + "," + 
                               l.getBook().getIsbn() + "," + 
