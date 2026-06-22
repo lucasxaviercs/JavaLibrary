@@ -10,12 +10,15 @@ public class BookController {
     private List<Book> books = new ArrayList<>();
     private FileManager fileManager;
 
+    // the constructor assigns a FileManager to it
     public BookController(FileManager fileManager) {
         this.fileManager = fileManager;
         this.books = fileManager.loadBooks();
     }
 
     public void addBook(String title, String author, String isbn, int totalCopies) {
+        // argument validation before adding the book
+        // each one throws an exception that will be caught by the GUI to show a JOPtionPane with an error message
         if (title == null || title.isBlank()){
             throw new IllegalArgumentException("You cannot add a book with no title!");
         } 
@@ -32,6 +35,7 @@ public class BookController {
             throw new IllegalArgumentException("Books must have a positive quantity!");
         }
 
+        // check if the isbn is actually new
         boolean isNew = books.stream().noneMatch(b -> b.getIsbn().equals(isbn));
 
         if(!isNew) {
@@ -44,6 +48,7 @@ public class BookController {
     }
 
     public void removeBook(String isbn){
+        // checks if the book exists before deleting it
         boolean bookExists = books.stream().anyMatch(b -> b.getIsbn().equals(isbn));
 
         if (!bookExists) {
@@ -55,12 +60,15 @@ public class BookController {
     }
 
     public void updateBook(String isbn, String newTitle, String newAuthor, int newTotalCopies){
+        // find the book given its isbn
         Book b = findByIsbn(isbn);
 
+        // if it doesn't exist, we can't update
         if (b == null) {
             throw new IllegalArgumentException("The book you're trying to update does not exist!");
         }
 
+        // argument validation before updating
         if (newTitle == null || newTitle.isBlank()) {
             throw new IllegalArgumentException("A book must have a title.");
         }
@@ -85,6 +93,8 @@ public class BookController {
         fileManager.saveBooks(books);
     }
 
+    // compare the search bar text with the isbn, title and author fields
+    // we use lower case for the match so that upper case letters don't ruin the search
     public List<Book> searchBooks(String query){
         String lower = query.toLowerCase();
         return books.stream().filter(b -> b.getIsbn().toLowerCase().contains(lower) || b.getTitle().toLowerCase().contains(lower) || b.getAuthor().toLowerCase().contains(lower)).collect(Collectors.toList());
