@@ -4,6 +4,7 @@ import controller.LoanController;
 import exception.BookAlreadyOnLoanException;
 import exception.PersistenceException;
 import model.Loan;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,14 +15,22 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
-public class LoanPanel extends JPanel implements ActionListener {
-    private LoanController controller;
-    private JTable loansTable;
-    private DefaultTableModel tableModel;
-    private JTextField searchField;
-    private JButton checkOutButton;
-    private JButton checkInButton;
 
+/*
+ * GUI panel for managing library book loans.
+ * Handles the display, search, checkout, and checkin operations.
+ */
+public class LoanPanel extends JPanel implements ActionListener {
+    private LoanController controller; // Handles business logic for loan operations
+    private JTable loansTable; // Displays the loan records in a grid format
+    private DefaultTableModel tableModel;
+    private JTextField searchField; // Captures user input for filtering the table
+    private JButton checkOutButton; // Triggers the checkout dialog
+    private JButton checkInButton; // Triggers the checkin process for a selected loan
+
+    /*
+     * Constructor initializes the UI, sets up event listeners, and loads initial data.
+     */
     public LoanPanel(LoanController controller) {
         this.controller = controller;
         initComponents();
@@ -29,9 +38,13 @@ public class LoanPanel extends JPanel implements ActionListener {
         refreshTable(controller.getAllLoans());
     }
 
+    /*
+     * It brings together the graphic elements and defines the layout structure.
+     */
     private void initComponents() {
         setLayout(new BorderLayout());
 
+        // Defines the table columns
         tableModel = new DefaultTableModel(new Object[]{"Loan ID", "Book Title", "Patron ID" ,"Patron Name", "Loan Date", "Due Date", "Status", "Fine ($)"}, 0);
         loansTable = new JTable(tableModel);
 
@@ -39,20 +52,27 @@ public class LoanPanel extends JPanel implements ActionListener {
         checkOutButton = new JButton("Check Out Book");
         checkInButton = new JButton("Check In (Return)");
 
+        // Groups the search components at the top of the panel
         JPanel top = new JPanel(new BorderLayout());
         top.add(new JLabel("Search (Book or Patron): "), BorderLayout.WEST);
         top.add(searchField, BorderLayout.CENTER);
 
+        // Groups the action buttons at the bottom of the panel
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.add(checkOutButton);
         buttonsPanel.add(checkInButton);
 
+        // Adds the sections to the main panel
         add(top, BorderLayout.NORTH);
         add(new JScrollPane(loansTable), BorderLayout.CENTER);
         add(buttonsPanel, BorderLayout.SOUTH);
     }
 
+    /*
+     * Binds event listeners to interactive components.
+     */
     private void initListeners() {
+        // Triggers the search method whenever the user types, deletes, or modifies text
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) { search(); }
@@ -66,6 +86,9 @@ public class LoanPanel extends JPanel implements ActionListener {
         checkInButton.addActionListener(this);
     }
 
+    /*
+     * Clears the current table and refills it with the current list of loans.
+     */
     private void refreshTable(List<Loan> loans) {
         tableModel.setRowCount(0);
         for (Loan l : loans) {
@@ -83,6 +106,9 @@ public class LoanPanel extends JPanel implements ActionListener {
         }
     }
 
+    /*
+     * Filters the displayed loans based on the text entered in the search field.
+     */
     private void search() {
         String query = searchField.getText().trim().toLowerCase();
         List<Loan> result;
@@ -90,6 +116,7 @@ public class LoanPanel extends JPanel implements ActionListener {
         if (query.isEmpty()) {
             result = controller.getAllLoans();
         } else {
+            // Filters the list by checking if the query matches the book title or patron name
             result = controller.getAllLoans().stream()
                     .filter(l -> l.getBook().getTitle().toLowerCase().contains(query) || 
                                  l.getPatron().getName().toLowerCase().contains(query))
@@ -99,7 +126,11 @@ public class LoanPanel extends JPanel implements ActionListener {
         refreshTable(result);
     }
 
+    /*
+     * Opens a modal dialog to collect patron ID and book ISBN for a new loan.
+     */
     private void openCheckOutDialog() {
+        // Creates a blocking dialog window centered over the main panel
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Check Out Book", true);
         dialog.setLayout(new GridLayout(3, 2));
 
@@ -118,11 +149,15 @@ public class LoanPanel extends JPanel implements ActionListener {
 
         confirmButton.addActionListener(ev -> {
             try {
+                // Retrieves and parses the user input
                 int patronId = Integer.parseInt(patronIdField.getText().trim());
                 String isbn = isbnField.getText().trim();
 
+                // Executes the business logic and refreshes the UI on succes
                 controller.checkOut(patronId, isbn);
                 refreshTable(controller.getAllLoans());
+
+                // Closes the dialog after a successful operation
                 dialog.dispose();
                 
             } catch (NumberFormatException ex) {
@@ -141,6 +176,9 @@ public class LoanPanel extends JPanel implements ActionListener {
         dialog.setVisible(true);
     }
 
+    /*
+     * Handles button click events for the panel.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == checkOutButton) {
@@ -148,6 +186,7 @@ public class LoanPanel extends JPanel implements ActionListener {
         }
 
         if (e.getSource() == checkInButton) {
+            // Identifies which row the user clicked in the table
             int selectedRow = loansTable.getSelectedRow();
 
             if (selectedRow == -1) {
