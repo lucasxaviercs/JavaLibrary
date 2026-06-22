@@ -37,13 +37,19 @@ public class Loan {
     public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
     public void setReturned(boolean isReturned) { this.isReturned = isReturned; }
 
+    /*
+     * Calculates the accumulated fine based on the days past the due date.
+     */
     public double getFineAmount() {
         
         if (isReturned) { return 0.0; }
         
+        // Retrieves the current system date
         LocalDate today = LocalDate.now();
         
+        // Checks if the current date is strictly after the required due date
         if (today.isAfter(dueDate)) {
+            // Counts the exact number of days late
             long daysLate = ChronoUnit.DAYS.between(dueDate, today);
             
             double dailyRate = 1.50; 
@@ -54,6 +60,9 @@ public class Loan {
         return 0.0; 
     }
 
+    /*
+     * Provides a formatted string representation of the loan state.
+     */
     @Override
     public String toString () {
         String status = isReturned ? "Returned" : "Active";
