@@ -2,10 +2,11 @@
 A simple Library Management System designed to demonstrate CRUD operations, core Object-Oriented Programming and GUI (Graphical User Interface)
 - Technologies used: Java + Swing
   
-Alunos
-- Leonardo Brito da Silva
-- Lucas Xavier Carvalho Santos
-- Yan Barbosa Servilha
+## Students
+
+* **Leonardo Brito da Silva**
+* **Lucas Xavier Carvalho Santos**
+* **Yan Barbosa Servilha**
 ---
 ## Project Description
 JavaLibrary is a desktop application that simulates the core operations of a library management system. It allows librarians to manage books, register patrons, and handle loan transactions using CSV file persistence so data survives between sessions.
