@@ -115,93 +115,139 @@ public class PatronsPanel extends JPanel implements ActionListener {
     }
 
     // Opens dialog to add a new patron
-    private void openAddDialog(){
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Add Patron", true);
-        dialog.setLayout(new GridLayout(3, 2));
+    private void openAddDialog() {
 
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Add Patron", true);
+    
         JTextField nameField = new JTextField();
         JTextField contactField = new JTextField();
-
-        dialog.add(new JLabel("Name: "));
-        dialog.add(nameField);
-        dialog.add(new JLabel("Contact: "));
-        dialog.add(contactField);
-
-        JButton confirmButton = new JButton("Confirm");
+    
+        // Panel of the form
+        JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    
+        formPanel.add(new JLabel("Name:"));
+        formPanel.add(nameField);
+    
+        formPanel.add(new JLabel("Contact:"));
+        formPanel.add(contactField);
+    
+        // Buttons
+        JButton confirmButton = new JButton("Save");
         JButton cancelButton = new JButton("Cancel");
-        dialog.add(confirmButton);
-        dialog.add(cancelButton);
-
+    
+        confirmButton.setBackground(new Color(46, 204, 113));
+        confirmButton.setForeground(Color.BLUE);
+        confirmButton.setFocusPainted(false);
+    
+        cancelButton.setBackground(new Color(231, 76, 60));
+        cancelButton.setForeground(Color.BLUE);
+        cancelButton.setFocusPainted(false);
+    
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(cancelButton);
+        buttonPanel.add(confirmButton);
+    
+        // Layout
+        dialog.setLayout(new BorderLayout());
+        dialog.add(formPanel, BorderLayout.CENTER);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+    
         confirmButton.addActionListener(ev -> {
-            try{
+            try {
                 controller.addPatron(nameField.getText(), contactField.getText());
+    
                 refreshTable(controller.getAllPatrons());
                 dialog.dispose();
-            } catch (IllegalArgumentException ex){
+    
+            } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (PersistenceException ex){
-                JOptionPane.showMessageDialog(dialog, "Could not save patron to file" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        cancelButton.addActionListener(ev-> dialog.dispose());
-
-        dialog.pack();
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
-
-    }
-
-    // Opens dialog to edit selected patron
-    private void openUpdateDialog(){
-        int selectedRow = patronsTable.getSelectedRow();
-
-        if(selectedRow == -1){
-            JOptionPane.showMessageDialog(this, "Select a patron to edit!");
-            
-            return;
-        }
-
-        int id = (int) tableModel.getValueAt(selectedRow, 0);
-        Patron patron = controller.findById(id);
-
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Edit Patron", true);
-        dialog.setLayout(new GridLayout(3, 2));
-
-        JTextField nameField = new JTextField(patron.getName());
-        JTextField contactField = new JTextField(patron.getContact());
-
-        dialog.add(new JLabel("ID:"));
-        dialog.add(new JLabel(String.valueOf(id)));
-        dialog.add(new JLabel("Name:"));
-        dialog.add(nameField);
-        dialog.add(new Label("Contact:"));
-        dialog.add(contactField);
-
-        JButton confirmButton = new JButton("Confirm");
-        JButton cancelButton = new JButton("Cancel");
-        dialog.add(confirmButton);
-        dialog.add(cancelButton);
-
-        confirmButton.addActionListener(ev -> {
-            try{
-                controller.editPatron(id, nameField.getText(), contactField.getText());
-                refreshTable(controller.getAllPatrons());
-                dialog.dispose();
-            } catch (IllegalArgumentException ex){
-                JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (PersistenceException ex){
+    
+            } catch (PersistenceException ex) {
                 JOptionPane.showMessageDialog(dialog, "Could not save patron to file. " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
+    
         cancelButton.addActionListener(ev -> dialog.dispose());
+    
+        dialog.setSize(400, 180);
+        dialog.setLocationRelativeTo(this);
+        dialog.setResizable(false);
+        dialog.setVisible(true);
+    }
 
-        dialog.pack();
+    // Opens dialog to edit selected patron
+    private void openUpdateDialog() {
+        int selectedRow = patronsTable.getSelectedRow();
+    
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Select a patron to edit!");
+            return;
+        }
+    
+        int id = (int) tableModel.getValueAt(selectedRow, 0);
+        Patron patron = controller.findById(id);
+    
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Edit Patron", true);
+    
+        JTextField nameField = new JTextField(patron.getName());
+        JTextField contactField = new JTextField(patron.getContact());
+    
+        // Panel of the form
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    
+        formPanel.add(new JLabel("ID:"));
+        formPanel.add(new JLabel(String.valueOf(id)));
+    
+        formPanel.add(new JLabel("Name:"));
+        formPanel.add(nameField);
+    
+        formPanel.add(new JLabel("Contact:"));
+        formPanel.add(contactField);
+    
+        // Buttons
+        JButton confirmButton = new JButton("Save");
+        JButton cancelButton = new JButton("Cancel");
+    
+        confirmButton.setBackground(new Color(52, 152, 219));
+        confirmButton.setForeground(Color.BLUE);
+        confirmButton.setFocusPainted(false);
+    
+        cancelButton.setBackground(new Color(231, 76, 60));
+        cancelButton.setForeground(Color.BLUE);
+        cancelButton.setFocusPainted(false);
+    
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(cancelButton);
+        buttonPanel.add(confirmButton);
+    
+        // Layout
+        dialog.setLayout(new BorderLayout());
+        dialog.add(formPanel, BorderLayout.CENTER);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+    
+        confirmButton.addActionListener(ev -> {
+            try {
+                controller.editPatron(id, nameField.getText(), contactField.getText());
+    
+                refreshTable(controller.getAllPatrons());
+                dialog.dispose();
+    
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    
+            } catch (PersistenceException ex) {
+                JOptionPane.showMessageDialog( dialog, "Could not save patron to file. " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    
+        cancelButton.addActionListener(ev -> dialog.dispose());
+    
+        dialog.setSize(420, 220);
+        dialog.setResizable(false);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-
-        
     }
 
     // Handles button clicks
