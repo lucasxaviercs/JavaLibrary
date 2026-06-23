@@ -47,15 +47,20 @@ public class BookController {
         fileManager.saveBooks(books);
     }
 
-    public void removeBook(String isbn){
-        // checks if the book exists before deleting it
-        boolean bookExists = books.stream().anyMatch(b -> b.getIsbn().equals(isbn));
+    public void removeBook(String isbn) {
+        // Checks if the book exists before deleting it
+        Book bookToRemove = findByIsbn(isbn);
 
-        if (!bookExists) {
+        if (bookToRemove == null) {
             throw new IllegalArgumentException("The book you're trying to remove does not exist!");
         }
 
-        books.removeIf(b -> b.getIsbn().equals(isbn));
+        // Prevents deletion if there are unreturned copies
+        if (bookToRemove.getAvailableCopies() < bookToRemove.getTotalCopies()) {
+            throw new IllegalArgumentException("Cannot delete book. There are copies currently on loan!");
+        }
+
+        books.remove(bookToRemove);
         fileManager.saveBooks(books);
     }
 
