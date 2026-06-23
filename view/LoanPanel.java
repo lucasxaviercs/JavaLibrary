@@ -146,7 +146,7 @@ public class LoanPanel extends JPanel implements ActionListener {
         formPanel.add(new JLabel("Book ISBN:"));
         formPanel.add(isbnField);
     
-        // BUTTONS
+        // Buttons
         JButton confirmButton = new JButton("Check Out");
         JButton cancelButton = new JButton("Cancel");
     
@@ -162,12 +162,11 @@ public class LoanPanel extends JPanel implements ActionListener {
         buttonPanel.add(cancelButton);
         buttonPanel.add(confirmButton);
     
-        // LAYOUT PRINCIPAL
+        // Layout
         dialog.setLayout(new BorderLayout());
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
     
-        // ACTION
         confirmButton.addActionListener(ev -> {
             try {
                 int patronId = Integer.parseInt(patronIdField.getText().trim());

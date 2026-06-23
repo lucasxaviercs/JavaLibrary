@@ -43,7 +43,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
         removeBookButton = new JButton("Delete");
 
         JPanel top = new JPanel(new BorderLayout());
-        top.add(new JLabel("Buscar: "), BorderLayout.WEST);
+        top.add(new JLabel("Search: "), BorderLayout.WEST);
         top.add(searchField, BorderLayout.CENTER);
 
         JPanel buttonsPanel = new JPanel(new FlowLayout());
@@ -108,7 +108,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
         JTextField isbnField = new JTextField();
         JTextField totalCopiesField = new JTextField();
     
-        // FORM
+        // Form
         JPanel formPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
     
@@ -124,7 +124,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
         formPanel.add(new JLabel("Total copies:"));
         formPanel.add(totalCopiesField);
     
-        // BUTTONS
+        // Buttons
         JButton confirmButton = new JButton("Save");
         JButton cancelButton = new JButton("Cancel");
     
@@ -185,7 +185,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
         JTextField authorField = new JTextField(b.getAuthor());
         JTextField totalCopiesField = new JTextField(String.valueOf(b.getTotalCopies()));
     
-        // FORM
+        // Form
         JPanel formPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
     
@@ -201,7 +201,7 @@ public class BooksPanel extends JPanel implements ActionListener, ComponentListe
         formPanel.add(new JLabel("Total copies:"));
         formPanel.add(totalCopiesField);
     
-        // BUTTONS
+        // Buttons
         JButton confirmButton = new JButton("Save");
         JButton cancelButton = new JButton("Cancel");
     
