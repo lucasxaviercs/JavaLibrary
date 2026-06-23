@@ -130,49 +130,70 @@ public class LoanPanel extends JPanel implements ActionListener {
      * Opens a modal dialog to collect patron ID and book ISBN for a new loan.
      */
     private void openCheckOutDialog() {
-        // Creates a blocking dialog window centered over the main panel
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Check Out Book", true);
-        dialog.setLayout(new GridLayout(3, 2));
 
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Check Out Book", true);
+    
         JTextField patronIdField = new JTextField();
         JTextField isbnField = new JTextField();
-
-        dialog.add(new JLabel("Patron ID:"));
-        dialog.add(patronIdField);
-        dialog.add(new JLabel("Book ISBN:"));
-        dialog.add(isbnField);
-
-        JButton confirmButton = new JButton("Confirm");
+    
+        // FORM
+        JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    
+        formPanel.add(new JLabel("Patron ID:"));
+        formPanel.add(patronIdField);
+    
+        formPanel.add(new JLabel("Book ISBN:"));
+        formPanel.add(isbnField);
+    
+        // BUTTONS
+        JButton confirmButton = new JButton("Check Out");
         JButton cancelButton = new JButton("Cancel");
-        dialog.add(confirmButton);
-        dialog.add(cancelButton);
-
+    
+        confirmButton.setBackground(new Color(46, 204, 113));
+        confirmButton.setForeground(Color.BLUE);
+        confirmButton.setFocusPainted(false);
+    
+        cancelButton.setBackground(new Color(231, 76, 60));
+        cancelButton.setForeground(Color.BLUE);
+        cancelButton.setFocusPainted(false);
+    
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(cancelButton);
+        buttonPanel.add(confirmButton);
+    
+        // LAYOUT PRINCIPAL
+        dialog.setLayout(new BorderLayout());
+        dialog.add(formPanel, BorderLayout.CENTER);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+    
+        // ACTION
         confirmButton.addActionListener(ev -> {
             try {
-                // Retrieves and parses the user input
                 int patronId = Integer.parseInt(patronIdField.getText().trim());
                 String isbn = isbnField.getText().trim();
-
-                // Executes the business logic and refreshes the UI on succes
+    
                 controller.checkOut(patronId, isbn);
                 refreshTable(controller.getAllLoans());
-
-                // Closes the dialog after a successful operation
+    
                 dialog.dispose();
-                
+    
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(dialog, "Patron ID must be a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
+    
             } catch (BookAlreadyOnLoanException | IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Operation Error", JOptionPane.ERROR_MESSAGE);
+    
             } catch (PersistenceException ex) {
                 JOptionPane.showMessageDialog(dialog, "Could not save loan to file: " + ex.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        cancelButton.addActionListener(ev -> dialog.dispose());
-
-        dialog.pack();
+    
+        cancelButton.addActionListener(e -> dialog.dispose());
+    
+        dialog.setSize(420, 180);
         dialog.setLocationRelativeTo(this);
+        dialog.setResizable(false);
         dialog.setVisible(true);
     }
 
